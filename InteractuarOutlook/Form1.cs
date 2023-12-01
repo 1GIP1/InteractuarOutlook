@@ -46,19 +46,19 @@ namespace InteractuarOutlook {
             Application outlookApp = new Application();
             NameSpace outlookNamespace = outlookApp.GetNamespace("MAPI");
 
-            // Leer correos de todas las cuentas
+            cbBandejasEntrada.Items.Clear(); // Limpia el ComboBox antes de cargar nuevos elementos
+            cbBandejasEntrada.Items.Add("Todos");
             foreach (Store store in outlookNamespace.Stores) {
                 string cuentaCorreo = store.DisplayName; // O alguna otra propiedad que identifique la cuenta
-
+                // Añadir la cuenta al ComboBox
+                cbBandejasEntrada.Items.Add(cuentaCorreo);
                 MAPIFolder bandejaEntrada = store.GetDefaultFolder(OlDefaultFolders.olFolderInbox);
                 LeerCorreosDeCarpeta(bandejaEntrada, "", "Recibido", cuentaCorreo); // Pasar la cuenta como parámetro
-
                 MAPIFolder bandejaEnviados = store.GetDefaultFolder(OlDefaultFolders.olFolderSentMail);
                 LeerCorreosDeCarpeta(bandejaEnviados, "", "Enviado", cuentaCorreo); // Pasar la cuenta como parámetro
             }
             return todosLosEmails.OrderByDescending(email => DateTime.Parse(email.FechaRecibo)).ToList();
         }
-
 
         // Leemos los correos pero escudriñando las carpetas
         private void LeerCorreosDeCarpeta(MAPIFolder carpeta, string rutaCarpeta, string esEnviado, string cuentaCorreo) {
@@ -94,7 +94,7 @@ namespace InteractuarOutlook {
             string filtroAsunto = txtAsuntosFiltro.Text.ToLower();
             string filtroCuerpo = txtCuerpoFiltro.Text.ToLower();
             DateTime fechaInicio = dtpFechaInicioFiltro.Value.Date;
-            DateTime fechaFin = dtpFechaFinalFiltro.Value.Date;
+            DateTime fechaFin = dtpFechaFinalFiltro.Value.Date.AddDays(1);
 
             if (!string.IsNullOrWhiteSpace(filtroEmisor)) {
                 correosFiltrados = correosFiltrados.Where(email =>
@@ -116,6 +116,10 @@ namespace InteractuarOutlook {
                     !string.IsNullOrEmpty(email.Cuerpo) &&
                     email.Cuerpo.ToLower().Contains(filtroCuerpo));
             }
+            if (cbBandejasEntrada.SelectedItem != null && cbBandejasEntrada.SelectedItem.ToString() != "Todos") {
+                string cuentaSeleccionada = cbBandejasEntrada.SelectedItem.ToString();
+                correosFiltrados = correosFiltrados.Where(email => email.Cuenta == cuentaSeleccionada);
+            }
             //Filtrar por checkbox
             if (rdbEnviado.Checked) {
                 correosFiltrados = correosFiltrados.Where(email => email.Enviado == "Enviado");
@@ -125,7 +129,7 @@ namespace InteractuarOutlook {
             // Filtrar por fechas
             correosFiltrados = correosFiltrados.Where(email => {
                 DateTime fechaRecibo = DateTime.Parse(email.FechaRecibo);
-                return fechaRecibo >= fechaInicio && fechaRecibo <= fechaFin;
+                return fechaRecibo >= fechaInicio && fechaRecibo < fechaFin;
             });
             dgBandejaEmail.DataSource = correosFiltrados.ToList();
         }
@@ -136,12 +140,15 @@ namespace InteractuarOutlook {
             txtReceptorFiltro.Clear();
             txtAsuntosFiltro.Clear();
             txtCuerpoFiltro.Clear();
+            cbBandejasEntrada.SelectedIndex = 0;
 
             dtpFechaInicioFiltro.Value = DateTime.Now.AddDays(-364);
             dtpFechaFinalFiltro.Value = DateTime.Now;
 
             // Restablecer el DataSource del DataGridView
             dgBandejaEmail.DataSource = todosLosEmails;
+            rdbRecibido.Checked = true;
+            aplicarFiltro();
         }
 
         private void tbbResponderCorreoOutlook_Click(object sender, EventArgs e) {

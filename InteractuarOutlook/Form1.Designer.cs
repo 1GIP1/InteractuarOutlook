@@ -27,6 +27,8 @@
             dgBandejaEmail = new DataGridView();
             panelSuperior = new Panel();
             groupBox1 = new GroupBox();
+            label7 = new Label();
+            cbBandejasEntrada = new ComboBox();
             groupBox2 = new GroupBox();
             rdbEnviado = new RadioButton();
             rdbRecibido = new RadioButton();
@@ -86,6 +88,8 @@
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(label7);
+            groupBox1.Controls.Add(cbBandejasEntrada);
             groupBox1.Controls.Add(groupBox2);
             groupBox1.Controls.Add(txtCuerpoFiltro);
             groupBox1.Controls.Add(label6);
@@ -103,18 +107,35 @@
             groupBox1.Controls.Add(txtEmisorFiltro);
             groupBox1.Location = new Point(3, 6);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(584, 135);
+            groupBox1.Size = new Size(563, 135);
             groupBox1.TabIndex = 10;
             groupBox1.TabStop = false;
             groupBox1.Text = "Filtros";
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Location = new Point(372, 25);
+            label7.Name = "label7";
+            label7.Size = new Size(49, 15);
+            label7.TabIndex = 19;
+            label7.Text = "Bandeja";
+            // 
+            // cbBandejasEntrada
+            // 
+            cbBandejasEntrada.FormattingEnabled = true;
+            cbBandejasEntrada.Location = new Point(427, 21);
+            cbBandejasEntrada.Name = "cbBandejasEntrada";
+            cbBandejasEntrada.Size = new Size(121, 23);
+            cbBandejasEntrada.TabIndex = 18;
             // 
             // groupBox2
             // 
             groupBox2.Controls.Add(rdbEnviado);
             groupBox2.Controls.Add(rdbRecibido);
-            groupBox2.Location = new Point(372, 22);
+            groupBox2.Location = new Point(372, 49);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(156, 79);
+            groupBox2.Size = new Size(176, 52);
             groupBox2.TabIndex = 13;
             groupBox2.TabStop = false;
             groupBox2.Text = "Enviado/Recibido";
@@ -122,7 +143,7 @@
             // rdbEnviado
             // 
             rdbEnviado.AutoSize = true;
-            rdbEnviado.Location = new Point(6, 47);
+            rdbEnviado.Location = new Point(81, 22);
             rdbEnviado.Name = "rdbEnviado";
             rdbEnviado.Size = new Size(67, 19);
             rdbEnviado.TabIndex = 12;
@@ -194,9 +215,9 @@
             // 
             // btnLimpiarFiltro
             // 
-            btnLimpiarFiltro.Location = new Point(453, 107);
+            btnLimpiarFiltro.Location = new Point(466, 107);
             btnLimpiarFiltro.Name = "btnLimpiarFiltro";
-            btnLimpiarFiltro.Size = new Size(75, 23);
+            btnLimpiarFiltro.Size = new Size(82, 23);
             btnLimpiarFiltro.TabIndex = 11;
             btnLimpiarFiltro.Text = "Limpiar";
             btnLimpiarFiltro.UseVisualStyleBackColor = true;
@@ -215,7 +236,7 @@
             // 
             btnAceptarFiltro.Location = new Point(372, 107);
             btnAceptarFiltro.Name = "btnAceptarFiltro";
-            btnAceptarFiltro.Size = new Size(75, 23);
+            btnAceptarFiltro.Size = new Size(82, 23);
             btnAceptarFiltro.TabIndex = 10;
             btnAceptarFiltro.Text = "Aceptar";
             btnAceptarFiltro.UseVisualStyleBackColor = true;
@@ -390,5 +411,7 @@
         private GroupBox groupBox2;
         private RadioButton rdbEnviado;
         private RadioButton rdbRecibido;
+        private Label label7;
+        private ComboBox cbBandejasEntrada;
     }
 }
