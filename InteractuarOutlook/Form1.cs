@@ -7,12 +7,13 @@ namespace InteractuarOutlook {
     public partial class Form1 : Form {
         #region Variables
         string emisorFiltro, receptorFiltro, asuntoFiltro;
+        int diasCarga = -7;
         DateTime fechaInicioFiltro, fechaFinalFiltro;
         List<Email> todosLosEmails;
         private Dictionary<string, Color> coloresPorCuenta = new Dictionary<string, Color>();
         private List<Color> coloresDisponibles = new List<Color> {
             Color.LightBlue, Color.LightGreen, Color.LightCoral,
-            Color.LightGoldenrodYellow, Color.LightPink, // etc., una lista de colores predefinidos
+            Color.LightGoldenrodYellow, Color.LightPink, // etc., una lista de colores predefinidos si queremos añadir mas colores para las diferentes cuentas se deben de añadir aqui.
         };
         private int indiceColorActual = 0;
         #endregion
@@ -21,7 +22,7 @@ namespace InteractuarOutlook {
         }
 
         private void Form1_Load(object sender, EventArgs e) {
-            dtpFechaInicioFiltro.Value = DateTime.Now.AddDays(-364);
+            dtpFechaInicioFiltro.Value = DateTime.Now.AddDays(diasCarga); //En esta linea elegiremos cuantos dias atras queremos cargar en este caso solo se muestran los correos de una semana atras.
             dtpFechaFinalFiltro.Value = DateTime.Now;
             todosLosEmails = LeerCorreos();
             dgBandejaEmail.DataSource = todosLosEmails;
@@ -120,10 +121,10 @@ namespace InteractuarOutlook {
                 string cuentaSeleccionada = cbBandejasEntrada.SelectedItem.ToString();
                 correosFiltrados = correosFiltrados.Where(email => email.Cuenta == cuentaSeleccionada);
             }
-            //Filtrar por checkbox
+            //Filtrar por radiobutton
             if (rdbEnviado.Checked) {
                 correosFiltrados = correosFiltrados.Where(email => email.Enviado == "Enviado");
-            } else if (rdbRecibido.Checked) { // Asegúrate de tener un RadioButton para correos recibidos
+            } else if (rdbRecibido.Checked) { 
                 correosFiltrados = correosFiltrados.Where(email => email.Enviado == "Recibido");
             }
             // Filtrar por fechas
@@ -142,7 +143,7 @@ namespace InteractuarOutlook {
             txtCuerpoFiltro.Clear();
             cbBandejasEntrada.SelectedIndex = 0;
 
-            dtpFechaInicioFiltro.Value = DateTime.Now.AddDays(-364);
+            dtpFechaInicioFiltro.Value = DateTime.Now.AddDays(diasCarga);
             dtpFechaFinalFiltro.Value = DateTime.Now;
 
             // Restablecer el DataSource del DataGridView
@@ -198,6 +199,7 @@ namespace InteractuarOutlook {
             }
         }
 
+        //Asignamos un color a cada correo de las diferentes cuentas
         private Color ObtenerColorParaCuenta(string cuenta) {
             if (!coloresPorCuenta.ContainsKey(cuenta)) {
                 Color colorAsignado = coloresDisponibles[indiceColorActual % coloresDisponibles.Count];
